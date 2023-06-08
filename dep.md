@@ -3,7 +3,7 @@ sudo
 apt-get install xz-utils
 apt-get install libssl-dev
 apt-get install libldap2-dev
-
+libpcre3-dev
 
 pcre_prefix=/usr/local/openresty/pcre
 HOSTNAME=95920d8a6e73
