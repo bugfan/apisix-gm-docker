@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:bullseye-slim as base
 
 RUN set -ex; \
 	apt update; \
@@ -48,7 +48,18 @@ RUN make deps \
 
 WORKDIR /usr/local/apisix
 
+RUN rm -rf /apisix-build-tools  /install-deps.sh /install-luarocks.sh /tongsuo
+
 COPY ./apisix-inner /usr/local/apisix
+
+FROM debian:bullseye-slim
+
+COPY --from=base /usr/local /usr/local
+COPY --from=base /usr/bin/apisix /usr/bin/apisix
+
+RUN rm -rf /usr/local/go
+
+ENV PATH=$PATH:/usr/local/openresty/luajit/bin:/usr/local/openresty/nginx/sbin:/usr/local/openresty/bin
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /usr/local/apisix/logs/access.log \
